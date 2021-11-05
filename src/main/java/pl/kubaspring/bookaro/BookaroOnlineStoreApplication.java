@@ -14,11 +14,18 @@ public class BookaroOnlineStoreApplication implements CommandLineRunner {
 	}
 
 
+	private final CatalogService catalogService;
+
+	// automatycznie odpalany przez Springa w momencie startu
+	public BookaroOnlineStoreApplication(CatalogService catalogService) {
+		this.catalogService = catalogService;
+	}
+
 
 	// metoda ta uruchamia się w momencie gdy już cała apka wstanie (wstanie kontekst Spirnga, wstanie apka )
 	@Override
 	public void run(String... args) throws Exception {
-		CatalogService catalogService = new CatalogService();
+//		CatalogService catalogService = new CatalogService();
 		List<Book> books = catalogService.findByTitle("Boy");
 		books.forEach(System.out::println);
 
