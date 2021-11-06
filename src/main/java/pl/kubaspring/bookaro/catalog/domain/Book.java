@@ -1,6 +1,6 @@
-package pl.kubaspring.bookaro;
+package pl.kubaspring.bookaro.catalog.domain;
 
-class Book {
+public class Book {
     Long id;
     String title;
     String author;
