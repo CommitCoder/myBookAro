@@ -18,17 +18,18 @@ public class BookaroOnlineStoreApplication {
 				SpringApplication.run(BookaroOnlineStoreApplication.class, args);
 	}
 
-	@Bean
-	CatalogRepository catalogRepository(){
-		Random random = new Random();
-		if(random.nextBoolean()){
-			System.out.println(" choosed bestsellers ");
-			return new BestsellerCatalogRepository();
-		}else {
-			System.out.println(" choosed school book ");
-			return new SchoolCatalogRepository();
-		}
-	}
+
+//	@Bean
+//	CatalogRepository catalogRepository(){
+//		Random random = new Random();
+//		if(random.nextBoolean()){
+//			System.out.println(" choosed bestsellers ");
+//			return new BestsellerCatalogRepository();
+//		}else {
+//			System.out.println(" choosed school book ");
+//			return new SchoolCatalogRepository();
+//		}
+//	}
 
 
 

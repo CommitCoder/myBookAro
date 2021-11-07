@@ -1,6 +1,7 @@
 package pl.kubaspring.bookaro;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import pl.kubaspring.bookaro.catalog.application.CatalogController;
@@ -8,17 +9,25 @@ import pl.kubaspring.bookaro.catalog.domain.Book;
 
 import java.util.List;
 
-
 @Component
-@RequiredArgsConstructor
 public class ApplicationStartup implements CommandLineRunner {
 
     private final CatalogController catalogController;
+    private final String title;
+    private final Long limit;
 
-    // metoda ta uruchamia się w momencie gdy już cała apka wstanie (wstanie kontekst Spirnga, wstanie apka )
+    public ApplicationStartup(CatalogController catalogController,
+                              @Value("${bookaro.catalog.query}") String title,
+                              @Value("${bookaro.catalog.limit:3}") Long limit) {
+        this.catalogController = catalogController;
+        this.title = title;
+        this.limit = limit;
+
+    }
+
     @Override
     public void run(String... args) throws Exception {
-        List<Book> books = catalogController.findByTitle("Boy");
-        books.forEach(System.out::println);
+        List<Book> books = catalogController.findByTitle(title);
+        books.stream().limit(limit).forEach(System.out::println);
     }
 }

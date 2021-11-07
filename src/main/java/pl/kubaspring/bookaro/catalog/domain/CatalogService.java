@@ -11,7 +11,7 @@ public class CatalogService {
 
     private final CatalogRepository catalogRepository;
 
-    public CatalogService(CatalogRepository catalogRepository) {
+    public CatalogService(@Qualifier("schoolCatalogRepository") CatalogRepository catalogRepository) {
         this.catalogRepository = catalogRepository;
     }
 

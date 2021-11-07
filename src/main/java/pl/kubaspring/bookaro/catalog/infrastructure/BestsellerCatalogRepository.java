@@ -10,16 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+@Repository
 public class BestsellerCatalogRepository implements CatalogRepository {
 
     private final Map<Long, Book> storage = new ConcurrentHashMap<>();
 
     public BestsellerCatalogRepository() {
-        storage.put(1L, new Book(1L, "Potop", "Sienkiewicz",2022 ));
+        storage.put(1L, new Book(1L, "Harry Potter", "Rowling",2022 ));
         storage.put(2L, new Book(2L, "Boy", "Cezary",2021 ));
-        storage.put(3L, new Book(3L, "Boy 2 bestsellet", "Cezary Szefs",2022 ));
-        storage.put(4L, new Book(4L, "Patos", "Steve",2020 ));
+        storage.put(3L, new Book(3L, "Man", "Cezo",2022 ));
+        storage.put(4L, new Book(4L, "Harry Potter 2", "Rowling",2020 ));
     }
 
     @Override
