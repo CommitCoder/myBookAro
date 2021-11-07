@@ -8,4 +8,5 @@ import java.util.List;
 //@Repository
 public interface CatalogRepository {
     List<Book> findAll();
+
 }

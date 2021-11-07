@@ -27,4 +27,5 @@ public class BestsellerCatalogRepository implements CatalogRepository {
         return new ArrayList<>(storage.values());
     }
 
+
 }

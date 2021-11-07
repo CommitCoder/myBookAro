@@ -26,4 +26,5 @@ public class SchoolCatalogRepository implements CatalogRepository {
     public List<Book> findAll() {
         return new ArrayList<>(storage.values());
     }
+
 }
