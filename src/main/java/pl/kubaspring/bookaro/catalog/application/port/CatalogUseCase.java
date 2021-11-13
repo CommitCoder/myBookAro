@@ -3,8 +3,12 @@ package pl.kubaspring.bookaro.catalog.application.port;
 import lombok.Value;
 import pl.kubaspring.bookaro.catalog.domain.Book;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyList;
 
 public interface CatalogUseCase {
     List<Book> findByTitle(String title);
@@ -17,7 +21,7 @@ public interface CatalogUseCase {
 
     void removeById(Long id);
 
-    void updateBook();
+    UpdateBookResponse updateBook(UpdateBookCommand updateBookCommand);
 
     List<Book> findByAuthor(String author);
 
@@ -26,6 +30,21 @@ public interface CatalogUseCase {
          String title;
          String author;
          Integer year;
+    }
+
+    @Value
+    class UpdateBookCommand {
+        Long id;
+        String title;
+        String author;
+        Integer year;
+    }
+
+    @Value
+    class UpdateBookResponse{
+        public static UpdateBookResponse SUCCESS = new UpdateBookResponse(true, emptyList());
+        boolean success;
+        List<String> errors;
     }
 
 }
