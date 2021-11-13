@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import pl.kubaspring.bookaro.catalog.application.port.CatalogUseCase;
 import pl.kubaspring.bookaro.catalog.application.port.CatalogUseCase.UpdateBookCommand;
+import pl.kubaspring.bookaro.catalog.application.port.CatalogUseCase.UpdateBookResponse;
 import pl.kubaspring.bookaro.catalog.domain.Book;
 
 import java.util.List;
@@ -61,15 +62,13 @@ public class ApplicationStartup implements CommandLineRunner {
         System.out.println("Updating book ______");
         catalog.findOneByTitleAndAuthor("Harry Potter", "Rowling")
                 .ifPresent(book -> {
-                    UpdateBookCommand command = new UpdateBookCommand(
-                            book.getId(),
-                            "Harry Potter i Komnata tajemnic",
-                            book.getAuthor(),
-                            book.getYear()
-                    );
-                    catalog.updateBook(command);
+                    UpdateBookCommand command = UpdateBookCommand.builder()
+                        .id(book.getId())
+                        .title("Harry Potter i Komnata tajemnic")
+                        .build();
+                    UpdateBookResponse response = catalog.updateBook(command);
+                    System.out.println("Updating book result:" + response.isSuccess());
                 });
-
 
     }
 
