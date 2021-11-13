@@ -1,6 +1,6 @@
 package pl.kubaspring.bookaro.catalog.application;
 
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.kubaspring.bookaro.catalog.application.port.CatalogUseCase;
 import pl.kubaspring.bookaro.catalog.domain.Book;
@@ -11,17 +11,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 class CatalogService implements CatalogUseCase {
 
-    private final CatalogRepository catalogRepository;
-
-    public CatalogService(@Qualifier("schoolCatalogRepository") CatalogRepository catalogRepository) {
-        this.catalogRepository = catalogRepository;
-    }
+    private final CatalogRepository repository;
 
     @Override
     public List<Book> findByTitle(String title){
-        return catalogRepository.findAll()
+        return repository.findAll()
                 .stream()
                 .filter(book -> book.getTitle().startsWith(title))
                 .collect(Collectors.toList());
@@ -38,8 +35,9 @@ class CatalogService implements CatalogUseCase {
     }
 
     @Override
-    public void addBook(){
-
+    public void addBook(CreateBookCommand command) {
+        Book book = new Book(command.getTitle(), command.getAuthor(), command.getYear());
+        repository.save(book);
     }
 
     @Override
@@ -55,7 +53,7 @@ class CatalogService implements CatalogUseCase {
 
     @Override
     public List<Book> findByAuthor(String author){
-        return catalogRepository.findAll()
+        return repository.findAll()
                 .stream()
                 .filter(book -> book.getAuthor().startsWith(author))
                 .collect(Collectors.toList());

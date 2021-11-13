@@ -1,5 +1,6 @@
 package pl.kubaspring.bookaro.catalog.application.port;
 
+import lombok.Value;
 import pl.kubaspring.bookaro.catalog.domain.Book;
 
 import java.util.List;
@@ -12,11 +13,19 @@ public interface CatalogUseCase {
 
     Optional<Book> findOneByTitleAndAuthor(String title, String author);
 
-    void addBook();
+    void addBook(CreateBookCommand createBookCommand);
 
     void removeById(Long id);
 
     void updateBook();
 
     List<Book> findByAuthor(String author);
+
+    @Value
+     class CreateBookCommand{
+         String title;
+         String author;
+         Integer year;
+    }
+
 }

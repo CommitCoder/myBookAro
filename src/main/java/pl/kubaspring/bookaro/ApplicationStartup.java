@@ -24,21 +24,34 @@ public class ApplicationStartup implements CommandLineRunner {
         this.title = title;
         this.limit = limit;
         this.author = author;
-
+ 
     }
 
     @Override
     public void run(String... args) throws Exception {
+        initData();
+        findByTitle();
+        findByAuthor();
+    }
 
-        System.out.println();
-        System.out.println("find by title  \"Pan\"");
-        List<Book> books = catalog.findByTitle(title);
-        books.stream().limit(limit).forEach(System.out::println);
+    private void initData() {
+        catalog.addBook(new CatalogUseCase.CreateBookCommand("Harry Potter", "Rowling",2019 ));
+        catalog.addBook(new CatalogUseCase.CreateBookCommand( "Boy", "Cezary",2021 ));
+        catalog.addBook(new CatalogUseCase.CreateBookCommand("Man", "Cezo",2022  ));
+        catalog.addBook(new CatalogUseCase.CreateBookCommand( "Harry Potter 2", "Rowling",2020  ));
+    }
 
+    private void findByAuthor() {
         System.out.println();
-        System.out.println("find by author \"Henryk\"");
+        System.out.println("find by author: " + author);
         List<Book> booksByAuthor = catalog.findByAuthor(author);
         booksByAuthor.forEach(System.out::println);
+    }
 
+    private void findByTitle() {
+        System.out.println();
+        System.out.println("find by title" + title);
+        List<Book> books = catalog.findByTitle(title);
+        books.stream().limit(limit).forEach(System.out::println);
     }
 }

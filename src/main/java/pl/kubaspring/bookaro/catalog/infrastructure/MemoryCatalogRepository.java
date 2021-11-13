@@ -9,23 +9,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-public class BestsellerCatalogRepository implements CatalogRepository {
+public class MemoryCatalogRepository implements CatalogRepository {
 
     private final Map<Long, Book> storage = new ConcurrentHashMap<>();
-
-    public BestsellerCatalogRepository() {
-        storage.put(1L, new Book(1L, "Harry Potter", "Rowling",2022 ));
-        storage.put(2L, new Book(2L, "Boy", "Cezary",2021 ));
-        storage.put(3L, new Book(3L, "Man", "Cezo",2022 ));
-        storage.put(4L, new Book(4L, "Harry Potter 2", "Rowling",2020 ));
-    }
+    private final AtomicLong ID_NEXT_VALUE = new AtomicLong(0L);
 
     @Override
     public List<Book> findAll() {
         return new ArrayList<>(storage.values());
     }
 
+    @Override
+    public void save(Book book) {
+        long nextId =  nextId();
+        book.setId(nextId);
+        storage.put(nextId, book);
+    }
 
+    private Long nextId() {
+       return ID_NEXT_VALUE.getAndIncrement();
+    }
 }
