@@ -4,17 +4,18 @@ import lombok.Builder;
 import lombok.Value;
 import pl.kubaspring.bookaro.catalog.domain.Book;
 
-import java.util.Collections;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 
 public interface CatalogUseCase {
+    List<Book> findAll();
+
     List<Book> findByTitle(String title);
 
-    List<Book> findAll();
+    Optional<Book> findOneByTitle(String title);
 
     Optional<Book> findOneByTitleAndAuthor(String title, String author);
 
@@ -31,6 +32,11 @@ public interface CatalogUseCase {
          String title;
          String author;
          Integer year;
+         BigDecimal price;
+
+         public Book toBook(){
+             return new Book(title, author, year, price);
+         }
     }
 
     @Value
