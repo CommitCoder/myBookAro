@@ -39,7 +39,7 @@ public class ApplicationStartup implements CommandLineRunner {
         this.title = title;
         this.limit = limit;
         this.author = author;
- 
+
     }
 
     @Override
@@ -47,6 +47,47 @@ public class ApplicationStartup implements CommandLineRunner {
         initData();
         searchCatalog();
         placeOrder();
+    }
+
+    private void searchCatalog() {
+        findByTitle();
+        findAndUpdate();
+        findByAuthor();
+    }
+
+    private void initData() {
+        catalog.addBook(new CatalogUseCase.CreateBookCommand("Pan Tadeusz", "Adam Mickiewicz", 1834, new BigDecimal("19.90")));
+        catalog.addBook(new CatalogUseCase.CreateBookCommand("Ogniem i Mieczem", "Henryk Sienkiewicz", 1884, new BigDecimal("29.90")));
+        catalog.addBook(new CatalogUseCase.CreateBookCommand("Chłopi", "Władysław Reymont", 1904, new BigDecimal("11.90")));
+        catalog.addBook(new CatalogUseCase.CreateBookCommand("Pan Wołodyjowski", "Henryk Sienkiewicz", 1899, new BigDecimal("14.90")));
+    }
+
+    private void findByTitle() {
+        System.out.println();
+        System.out.println("find by title _____" + title);
+        List<Book> books = catalog.findByTitle(title);
+        books.stream().limit(limit).forEach(System.out::println);
+    }
+
+    private void findAndUpdate() {
+        System.out.println();
+        System.out.println("Updating book ______");
+        catalog.findOneByTitleAndAuthor("Pan", "Adam")
+                .ifPresent(book -> {
+                    UpdateBookCommand command = UpdateBookCommand.builder()
+                            .id(book.getId())
+                            .title("Pan Tadeusz czyli Ostatni zajazd na Litwie")
+                            .build();
+                    UpdateBookResponse response = catalog.updateBook(command);
+                    System.out.println("Updating book result:" + response.isSuccess());
+                });
+    }
+
+    private void findByAuthor() {
+        System.out.println();
+        System.out.println("find by author _____ " + author);
+        List<Book> booksByAuthor = catalog.findByAuthor(author);
+        booksByAuthor.forEach(System.out::println);
     }
 
     private void placeOrder() {
@@ -71,57 +112,14 @@ public class ApplicationStartup implements CommandLineRunner {
                 .build();
 
         PlaceOrderResponse response = placeOrder.placeOrder(command);
+        System.out.println();
         System.out.println("Created ORDER with id: " + response.getOrderId());
 
-        //list all orders
         queryOrder.findAll()
-                    .forEach(order -> {
-                        System.out.println("GOT ORDER WITH TOTAL PRICE: " + order.totalPrice() + " DETAILS " + order);
-                    });
-    }
-
-    private void searchCatalog() {
-        findByTitle();
-        findAndUpdate();
-        findByAuthor();
-    }
-
-    private void initData() {
-        catalog.addBook(new CatalogUseCase.CreateBookCommand("Pan Tadeusz", "Adam Mickiewicz",1834, new BigDecimal("19.90")));
-        catalog.addBook(new CatalogUseCase.CreateBookCommand( "Ogniem i Mieczem", "Henryk Sienkiewicz",1884, new BigDecimal("29.90") ));
-        catalog.addBook(new CatalogUseCase.CreateBookCommand("Chłopi", "Władysław Reymont",1904, new BigDecimal("11.90") ));
-        catalog.addBook(new CatalogUseCase.CreateBookCommand( "Pan Wołodyjowski", "Henryk Sienkiewicz",1899, new BigDecimal("14.90") ));
-    }
-
-    private void findByTitle() {
-        System.out.println();
-        System.out.println("find by title " + title);
-        List<Book> books = catalog.findByTitle(title);
-        books.stream().limit(limit).forEach(System.out::println);
-    }
-
-
-
-    private void findAndUpdate() {
-        System.out.println("Updating book ______");
-        catalog.findOneByTitleAndAuthor("Harry Potter", "Rowling")
-                .ifPresent(book -> {
-                    UpdateBookCommand command = UpdateBookCommand.builder()
-                        .id(book.getId())
-                        .title("Harry Potter i Komnata tajemnic")
-                        .build();
-                    UpdateBookResponse response = catalog.updateBook(command);
-                    System.out.println("Updating book result:" + response.isSuccess());
+                .forEach(order -> {
+                    System.out.println("GOT ORDER WITH TOTAL PRICE: " + order.totalPrice());
+                    System.out.println(" DETAILS " + order);
                 });
-
     }
-
-    private void findByAuthor() {
-        System.out.println();
-        System.out.println("find by author: " + author);
-        List<Book> booksByAuthor = catalog.findByAuthor(author);
-        booksByAuthor.forEach(System.out::println);
-    }
-
 
 }

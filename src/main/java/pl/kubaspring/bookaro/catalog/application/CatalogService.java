@@ -6,7 +6,6 @@ import pl.kubaspring.bookaro.catalog.application.port.CatalogUseCase;
 import pl.kubaspring.bookaro.catalog.domain.Book;
 import pl.kubaspring.bookaro.catalog.domain.CatalogRepository;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
