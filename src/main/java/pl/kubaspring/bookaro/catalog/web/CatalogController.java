@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.kubaspring.bookaro.catalog.application.port.CatalogUseCase;
@@ -15,8 +16,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequestMapping("/catalog")
 @RestController
@@ -63,11 +64,13 @@ public class CatalogController {
         return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + book.getId().toString()).build().toUri();
     }
 
+
+
     @Data
     private static class RestCreateBookCommand{
-        @NotBlank
+        @NotBlank(message = "Please provide a title")
         private String title;
-        @NotBlank
+        @NotBlank(message = "Please provide an author")
         private String author;
         @NotNull
         private Integer year;
