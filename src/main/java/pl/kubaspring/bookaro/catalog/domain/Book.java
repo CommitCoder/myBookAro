@@ -4,9 +4,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
-//@Getter
-//@Setter
-//@AllArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -17,6 +14,7 @@ public class Book {
     private String author;
     private Integer year;
     private BigDecimal price;
+    private String coverId; // id wskazujące na daną książkę(referencja)
 
     public Book(String title, String author, Integer year, BigDecimal price) {
         this.title = title;
