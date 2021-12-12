@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import pl.kubaspring.bookaro.catalog.application.port.CatalogUseCase;
 import pl.kubaspring.bookaro.catalog.domain.Book;
 import pl.kubaspring.bookaro.catalog.domain.CatalogRepository;
+import pl.kubaspring.bookaro.uploads.application.ports.UploadUseCase;
+import pl.kubaspring.bookaro.uploads.application.ports.UploadUseCase.SaveUploadCommand;
+import pl.kubaspring.bookaro.uploads.domain.Upload;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.stream.Collectors;
 class CatalogService implements CatalogUseCase {
 
     private final CatalogRepository repository;
+    private final UploadUseCase upload;
 
     @Override
     public List<Book> findAll(){
@@ -97,11 +101,11 @@ class CatalogService implements CatalogUseCase {
 
     @Override
     public void updateBookCover(UpdateBookCoverCommand command) {
-        int length = command.getFile().length;
-        System.out.println("Received cover command: " + command.getFileName() + " bytes: " + length);
         repository.findById(command.getId())
                     .ifPresent(book -> {
-//                        book.setCoverId();
+                        Upload savedUpload = upload.save(new SaveUploadCommand(command.getFileName(), command.getFile(), command.getContentType()));
+                        book.setCoverId(savedUpload.getId());
+                        repository.save(book);
                     });
 
     }
