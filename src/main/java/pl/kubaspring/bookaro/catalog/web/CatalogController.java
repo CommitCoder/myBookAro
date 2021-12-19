@@ -57,14 +57,6 @@ public class CatalogController {
         return ResponseEntity.created(createdBookUri(book)).build();
     }
 
-    @PutMapping("/{id}/cover") // zakładamy że książka już istnieje  /  customowe handlowanie wyjątku(IOException) można napisać, przykład już jest
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void addBookCover(@PathVariable Long id, @RequestParam("file")MultipartFile file) throws IOException { // do przechwytywania pliku, w file będzie zapisany przesłany plik
-        System.out.println("got file: " + file.getOriginalFilename());
-        catalog.updateBookCover(new UpdateBookCoverCommand(id, file.getBytes(), file.getContentType(), file.getOriginalFilename()));
-    }
-
-
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED) // 202
     public void updateBook(@PathVariable Long id, @RequestBody RestBookCommand command){
@@ -85,6 +77,18 @@ public class CatalogController {
         return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + book.getId().toString()).build().toUri();
     }
 
+    @PutMapping("/{id}/cover") // zakładamy że książka już istnieje  /  customowe handlowanie wyjątku(IOException) można napisać, przykład już jest
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void addBookCover(@PathVariable Long id, @RequestParam("file")MultipartFile file) throws IOException { // do przechwytywania pliku, w file będzie zapisany przesłany plik
+        System.out.println("got file: " + file.getOriginalFilename());
+        catalog.updateBookCover(new UpdateBookCoverCommand(id, file.getBytes(), file.getContentType(), file.getOriginalFilename()));
+    }
+
+    @DeleteMapping("/{id}/cover")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeBookCover(@PathVariable Long id ){
+        catalog.removeBookCover(id);
+    }
 
     @Data
     private static class RestBookCommand {
