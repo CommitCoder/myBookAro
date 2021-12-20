@@ -3,6 +3,7 @@ package pl.kubaspring.bookaro.catalog.web;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,7 +59,7 @@ public class CatalogController {
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.ACCEPTED) // 202
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void updateBook(@PathVariable Long id, @RequestBody RestBookCommand command){
         CatalogUseCase.UpdateBookResponse response = catalog.updateBook(command.toUpdateCommand(id));
         if(!response.isSuccess()){
@@ -77,9 +78,9 @@ public class CatalogController {
         return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + book.getId().toString()).build().toUri();
     }
 
-    @PutMapping("/{id}/cover") // zakładamy że książka już istnieje  /  customowe handlowanie wyjątku(IOException) można napisać, przykład już jest
+    @PutMapping(value = "/{id}/cover", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void addBookCover(@PathVariable Long id, @RequestParam("file")MultipartFile file) throws IOException { // do przechwytywania pliku, w file będzie zapisany przesłany plik
+    public void addBookCover(@PathVariable Long id, @RequestParam("file")MultipartFile file) throws IOException {
         System.out.println("got file: " + file.getOriginalFilename());
         catalog.updateBookCover(new UpdateBookCoverCommand(id, file.getBytes(), file.getContentType(), file.getOriginalFilename()));
     }
