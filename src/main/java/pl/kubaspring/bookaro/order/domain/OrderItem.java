@@ -4,6 +4,6 @@ import lombok.Value;
 import pl.kubaspring.bookaro.catalog.domain.Book;
 @Value
 public class OrderItem {
-    Book book;
+    Long bookId;
     int quantity;
 }

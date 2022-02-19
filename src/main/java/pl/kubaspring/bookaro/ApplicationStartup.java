@@ -7,9 +7,9 @@ import pl.kubaspring.bookaro.catalog.application.port.CatalogUseCase;
 import pl.kubaspring.bookaro.catalog.application.port.CatalogUseCase.UpdateBookCommand;
 import pl.kubaspring.bookaro.catalog.application.port.CatalogUseCase.UpdateBookResponse;
 import pl.kubaspring.bookaro.catalog.domain.Book;
-import pl.kubaspring.bookaro.order.application.port.PlaceOrderUseCase;
-import pl.kubaspring.bookaro.order.application.port.PlaceOrderUseCase.PlaceOrderCommand;
-import pl.kubaspring.bookaro.order.application.port.PlaceOrderUseCase.PlaceOrderResponse;
+import pl.kubaspring.bookaro.order.application.port.ManipulateOrderUseCase;
+import pl.kubaspring.bookaro.order.application.port.ManipulateOrderUseCase.PlaceOrderCommand;
+import pl.kubaspring.bookaro.order.application.port.ManipulateOrderUseCase.PlaceOrderResponse;
 import pl.kubaspring.bookaro.order.application.port.QueryOrderUseCase;
 import pl.kubaspring.bookaro.order.domain.OrderItem;
 import pl.kubaspring.bookaro.order.domain.Recipient;
@@ -21,14 +21,14 @@ import java.util.List;
 public class ApplicationStartup implements CommandLineRunner {
 
     private final CatalogUseCase catalog;
-    private final PlaceOrderUseCase placeOrder;
+    private final ManipulateOrderUseCase placeOrder;
     private final QueryOrderUseCase queryOrder;
     private final String title;
     private final Long limit;
     private final String author;
 
     public ApplicationStartup(CatalogUseCase catalog,
-                              PlaceOrderUseCase placeOrder,
+                              ManipulateOrderUseCase placeOrder,
                               QueryOrderUseCase queryOrder,
                               @Value("${bookaro.catalog.query}") String title,
                               @Value("${bookaro.catalog.limit}") Long limit,
@@ -107,13 +107,16 @@ public class ApplicationStartup implements CommandLineRunner {
         PlaceOrderCommand command = PlaceOrderCommand
                 .builder()
                 .recipient(recipient)
-                .item(new OrderItem(panTadeusz, 16))
-                .item(new OrderItem(chlopi, 7))
+                .item(new OrderItem(panTadeusz.getId(), 16))
+                .item(new OrderItem(chlopi.getId(), 7))
                 .build();
 
         PlaceOrderResponse response = placeOrder.placeOrder(command);
-        System.out.println();
-        System.out.println("Created ORDER with id: " + response.getOrderId());
+        String result = response.handle(
+                orderId -> "Created ORDER with id: " + orderId,
+                error -> "Failed to created order: " + error
+        );
+        System.out.println(result);
 
         queryOrder.findAll()
                 .forEach(order -> {
